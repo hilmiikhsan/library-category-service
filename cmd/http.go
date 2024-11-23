@@ -23,6 +23,7 @@ func ServeHTTP() {
 
 	categoryV1 := router.Group("/category/v1")
 	categoryV1.POST("/create", dependency.MiddlewareValidateToken, dependency.CategoryAPI.CreateCategory)
+	categoryV1.GET("/detail/:id", dependency.MiddlewareValidateToken, dependency.CategoryAPI.GetCategoryDetail)
 
 	err := router.Run(":" + helpers.GetEnv("PORT", ""))
 	if err != nil {

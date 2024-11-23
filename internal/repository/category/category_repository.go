@@ -3,7 +3,9 @@ package category
 import (
 	"context"
 	"database/sql"
+	"errors"
 
+	"github.com/hilmiikhsan/library-category-service/constants"
 	"github.com/hilmiikhsan/library-category-service/internal/models"
 	"github.com/jmoiron/sqlx"
 	"github.com/sirupsen/logrus"
@@ -35,6 +37,23 @@ func (r *CategoryRepository) FindCategoryByName(ctx context.Context, name string
 		}
 
 		r.Logger.Error("category::FindCategoryByName - failed to find category by name: ", err)
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (r *CategoryRepository) FindCategoryByID(ctx context.Context, id string) (*models.Category, error) {
+	var res = new(models.Category)
+
+	err := r.DB.GetContext(ctx, res, r.DB.Rebind(queryFindCategoryByID), id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			r.Logger.Error("category::FindCategoryByID - category doesnt exist")
+			return res, errors.New(constants.ErrCategoryNotFound)
+		}
+
+		r.Logger.Error("category::FindCategoryByID - failed to find category by id: ", err)
 		return nil, err
 	}
 

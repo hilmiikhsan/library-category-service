@@ -17,4 +17,13 @@ const (
 		FROM categories
 		WHERE name = ?
 	`
+
+	queryFindCategoryByID = `
+		SELECT
+			id,
+			name,
+			description
+		FROM categories
+		WHERE id = ?
+	`
 )

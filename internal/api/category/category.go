@@ -50,3 +50,36 @@ func (api *CategoryHandler) CreateCategory(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusCreated, helpers.Success(nil, ""))
 }
+
+func (api *CategoryHandler) GetCategoryDetail(ctx *gin.Context) {
+	var (
+		id = ctx.Param("id")
+	)
+
+	if id == "" {
+		helpers.Logger.Error("handler::GetCategoryDetail - Missing required parameter: id")
+		ctx.JSON(http.StatusBadRequest, helpers.Error("missing required parameter: id"))
+		return
+	}
+
+	if !helpers.IsValidUUID(id) {
+		helpers.Logger.Error("handler::GetCategoryDetail - Invalid UUID format for parameter: id")
+		ctx.JSON(http.StatusBadRequest, helpers.Error(constants.ErrParamIdIsRequired))
+		return
+	}
+
+	res, err := api.CategoryService.GetCategoryDetail(ctx.Request.Context(), id)
+	if err != nil {
+		if strings.Contains(err.Error(), constants.ErrCategoryNotFound) {
+			helpers.Logger.Error("handler::GetCategoryDetail - Category not found")
+			ctx.JSON(http.StatusNotFound, helpers.Error(constants.ErrCategoryNotFound))
+			return
+		}
+
+		helpers.Logger.Error("handler::GetCategoryDetail - Failed to get category detail : ", err)
+		ctx.JSON(http.StatusInternalServerError, helpers.Error(err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, helpers.Success(res, ""))
+}

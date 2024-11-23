@@ -39,3 +39,17 @@ func (s *CategoryService) CreateCategory(ctx context.Context, req *dto.CreateCat
 
 	return nil
 }
+
+func (s *CategoryService) GetCategoryDetail(ctx context.Context, id string) (*dto.GetDetailCategoryResponse, error) {
+	categoryData, err := s.CategoryRepo.FindCategoryByID(ctx, id)
+	if err != nil {
+		s.Logger.Error("category::GetCategoryDetail - failed to find category by id: ", err)
+		return nil, err
+	}
+
+	return &dto.GetDetailCategoryResponse{
+		ID:          categoryData.ID.String(),
+		Name:        categoryData.Name,
+		Description: categoryData.Description,
+	}, nil
+}

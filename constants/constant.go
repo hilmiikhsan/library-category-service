@@ -7,6 +7,8 @@ const (
 	ErrAuthorizationIsEmpty       = "authorization is empty"
 	ErrInvalidAuthorizationFormat = "invalid authorization format"
 	ErrInvalidAuthorization       = "invalid authorization"
+	ErrCategoryNotFound           = "category not found"
+	ErrParamIdIsRequired          = "param id is required"
 )
 
 const (
