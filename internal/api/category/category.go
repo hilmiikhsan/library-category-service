@@ -149,3 +149,36 @@ func (api *CategoryHandler) UpdateCategory(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, helpers.Success(nil, ""))
 }
+
+func (api *CategoryHandler) DeleteCategory(ctx *gin.Context) {
+	var (
+		id = ctx.Param("id")
+	)
+
+	if id == "" {
+		helpers.Logger.Error("handler::DeleteCategory - Missing required parameter: id")
+		ctx.JSON(http.StatusBadRequest, helpers.Error("missing required parameter: id"))
+		return
+	}
+
+	if !helpers.IsValidUUID(id) {
+		helpers.Logger.Error("handler::DeleteCategory - Invalid UUID format for parameter: id")
+		ctx.JSON(http.StatusBadRequest, helpers.Error(constants.ErrIdIsNotValidUUID))
+		return
+	}
+
+	err := api.CategoryService.DeleteCategory(ctx.Request.Context(), id)
+	if err != nil {
+		if strings.Contains(err.Error(), constants.ErrCategoryNotFound) {
+			helpers.Logger.Error("handler::DeleteCategory - Category not found")
+			ctx.JSON(http.StatusNotFound, helpers.Error(constants.ErrCategoryNotFound))
+			return
+		}
+
+		helpers.Logger.Error("handler::DeleteCategory - Failed to delete category : ", err)
+		ctx.JSON(http.StatusInternalServerError, helpers.Error(err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, helpers.Success(nil, ""))
+}

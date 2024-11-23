@@ -46,4 +46,8 @@ const (
 			updated_at = NOW()
 		WHERE id = ?
 	`
+
+	queryDeleteCategoryByID = `
+		DELETE FROM categories WHERE id = ?
+	`
 )

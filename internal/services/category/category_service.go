@@ -110,3 +110,24 @@ func (s *CategoryService) UpdateCategory(ctx context.Context, req *dto.UpdateCat
 
 	return nil
 }
+
+func (s *CategoryService) DeleteCategory(ctx context.Context, id string) error {
+	categoryData, err := s.CategoryRepo.FindCategoryByID(ctx, id)
+	if err != nil {
+		s.Logger.Error("category::DeleteCategory - failed to find category by id: ", err)
+		return err
+	}
+
+	if len(categoryData.Name) == 0 {
+		s.Logger.Error("category::DeleteCategory - category not found")
+		return errors.New(constants.ErrCategoryNotFound)
+	}
+
+	err = s.CategoryRepo.DeleteCategoryByID(ctx, id)
+	if err != nil {
+		s.Logger.Error("category::DeleteCategory - failed to delete category: ", err)
+		return err
+	}
+
+	return nil
+}

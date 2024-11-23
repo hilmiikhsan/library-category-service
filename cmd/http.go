@@ -26,6 +26,7 @@ func ServeHTTP() {
 	categoryV1.GET("/:id", dependency.MiddlewareValidateToken, dependency.CategoryAPI.GetDetailCategory)
 	categoryV1.GET("/", dependency.MiddlewareValidateToken, dependency.CategoryAPI.GetListCategory)
 	categoryV1.PUT("/update", dependency.MiddlewareValidateToken, dependency.CategoryAPI.UpdateCategory)
+	categoryV1.DELETE("/:id", dependency.MiddlewareValidateToken, dependency.CategoryAPI.DeleteCategory)
 
 	err := router.Run(":" + helpers.GetEnv("PORT", ""))
 	if err != nil {
