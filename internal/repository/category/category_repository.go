@@ -59,3 +59,15 @@ func (r *CategoryRepository) FindCategoryByID(ctx context.Context, id string) (*
 
 	return res, nil
 }
+
+func (r *CategoryRepository) FindAllCategory(ctx context.Context, limit, offset int) ([]models.Category, error) {
+	var res = make([]models.Category, 0)
+
+	err := r.DB.SelectContext(ctx, &res, r.DB.Rebind(queryFindAllCategory), limit, offset)
+	if err != nil {
+		r.Logger.Error("category::FindAllCategory - failed to find all category: ", err)
+		return nil, err
+	}
+
+	return res, nil
+}

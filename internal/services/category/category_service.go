@@ -40,7 +40,7 @@ func (s *CategoryService) CreateCategory(ctx context.Context, req *dto.CreateCat
 	return nil
 }
 
-func (s *CategoryService) GetCategoryDetail(ctx context.Context, id string) (*dto.GetDetailCategoryResponse, error) {
+func (s *CategoryService) GetDetailCategory(ctx context.Context, id string) (*dto.GetDetailCategoryResponse, error) {
 	categoryData, err := s.CategoryRepo.FindCategoryByID(ctx, id)
 	if err != nil {
 		s.Logger.Error("category::GetCategoryDetail - failed to find category by id: ", err)
@@ -52,4 +52,36 @@ func (s *CategoryService) GetCategoryDetail(ctx context.Context, id string) (*dt
 		Name:        categoryData.Name,
 		Description: categoryData.Description,
 	}, nil
+}
+
+func (s *CategoryService) GetListCategory(ctx context.Context, limit, offset int) (*dto.GetListCategoryResponse, error) {
+	pageSize := limit
+	pageIndex := (offset - 1) * limit
+
+	categoryData, err := s.CategoryRepo.FindAllCategory(ctx, pageSize, pageIndex)
+	if err != nil {
+		s.Logger.Error("category::GetListCategory - failed to find all category: ", err)
+		return nil, err
+	}
+
+	categories := make([]dto.Category, 0)
+	for _, category := range categoryData {
+		categories = append(categories, dto.Category{
+			ID:          category.ID.String(),
+			Name:        category.Name,
+			Description: category.Description,
+		})
+	}
+
+	pagination := dto.Pagination{
+		Page:  offset,
+		Limit: limit,
+	}
+
+	response := &dto.GetListCategoryResponse{
+		CategoryList: categories,
+		Pagination:   pagination,
+	}
+
+	return response, nil
 }

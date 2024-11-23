@@ -26,4 +26,15 @@ const (
 		FROM categories
 		WHERE id = ?
 	`
+
+	queryFindAllCategory = `
+		SELECT
+			id,
+			name,
+			description
+		FROM categories
+		ORDER BY updated_at DESC
+		LIMIT ?
+		OFFSET ?
+	`
 )

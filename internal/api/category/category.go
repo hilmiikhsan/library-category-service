@@ -2,6 +2,7 @@ package category
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -51,32 +52,57 @@ func (api *CategoryHandler) CreateCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusCreated, helpers.Success(nil, ""))
 }
 
-func (api *CategoryHandler) GetCategoryDetail(ctx *gin.Context) {
+func (api *CategoryHandler) GetDetailCategory(ctx *gin.Context) {
 	var (
 		id = ctx.Param("id")
 	)
 
 	if id == "" {
-		helpers.Logger.Error("handler::GetCategoryDetail - Missing required parameter: id")
+		helpers.Logger.Error("handler::GetDetailCategory - Missing required parameter: id")
 		ctx.JSON(http.StatusBadRequest, helpers.Error("missing required parameter: id"))
 		return
 	}
 
 	if !helpers.IsValidUUID(id) {
-		helpers.Logger.Error("handler::GetCategoryDetail - Invalid UUID format for parameter: id")
+		helpers.Logger.Error("handler::GetDetailCategory - Invalid UUID format for parameter: id")
 		ctx.JSON(http.StatusBadRequest, helpers.Error(constants.ErrParamIdIsRequired))
 		return
 	}
 
-	res, err := api.CategoryService.GetCategoryDetail(ctx.Request.Context(), id)
+	res, err := api.CategoryService.GetDetailCategory(ctx.Request.Context(), id)
 	if err != nil {
 		if strings.Contains(err.Error(), constants.ErrCategoryNotFound) {
-			helpers.Logger.Error("handler::GetCategoryDetail - Category not found")
+			helpers.Logger.Error("handler::GetDetailCategory - Category not found")
 			ctx.JSON(http.StatusNotFound, helpers.Error(constants.ErrCategoryNotFound))
 			return
 		}
 
-		helpers.Logger.Error("handler::GetCategoryDetail - Failed to get category detail : ", err)
+		helpers.Logger.Error("handler::GetDetailCategory - Failed to get category detail : ", err)
+		ctx.JSON(http.StatusInternalServerError, helpers.Error(err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, helpers.Success(res, ""))
+}
+
+func (api *CategoryHandler) GetListCategory(ctx *gin.Context) {
+	pageIndexStr := ctx.Query("page")
+	pageSizeStr := ctx.Query("limit")
+
+	pageIndex, _ := strconv.Atoi(pageIndexStr)
+	pageSize, _ := strconv.Atoi(pageSizeStr)
+
+	if pageIndex <= 0 {
+		pageIndex = 1
+	}
+
+	if pageSize <= 0 {
+		pageSize = 10
+	}
+
+	res, err := api.CategoryService.GetListCategory(ctx.Request.Context(), pageSize, pageIndex)
+	if err != nil {
+		helpers.Logger.Error("handler::GetListCategory - Failed to get list category : ", err)
 		ctx.JSON(http.StatusInternalServerError, helpers.Error(err.Error()))
 		return
 	}
