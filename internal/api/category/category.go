@@ -109,3 +109,43 @@ func (api *CategoryHandler) GetListCategory(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, helpers.Success(res, ""))
 }
+
+func (api *CategoryHandler) UpdateCategory(ctx *gin.Context) {
+	var (
+		req = new(dto.UpdateCategoryRequest)
+	)
+
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		helpers.Logger.Error("handler::UpdateCategory - Failed to bind request : ", err)
+		ctx.JSON(http.StatusBadRequest, helpers.Error(constants.ErrFailedBadRequest))
+		return
+	}
+
+	if err := api.Validator.Validate(req); err != nil {
+		helpers.Logger.Error("handler::UpdateCategory - Failed to validate request : ", err)
+		code, errs := helpers.Errors(err, req)
+		ctx.JSON(code, helpers.Error(errs))
+		return
+	}
+
+	if !helpers.IsValidUUID(req.ID) {
+		helpers.Logger.Error("handler::GetDetailCategory - Invalid UUID format for parameter: id")
+		ctx.JSON(http.StatusBadRequest, helpers.Error(constants.ErrIdIsNotValidUUID))
+		return
+	}
+
+	err := api.CategoryService.UpdateCategory(ctx.Request.Context(), req)
+	if err != nil {
+		if strings.Contains(err.Error(), constants.ErrCategoryNotFound) {
+			helpers.Logger.Error("handler::UpdateCategory - Category not found")
+			ctx.JSON(http.StatusNotFound, helpers.Error(constants.ErrCategoryNotFound))
+			return
+		}
+
+		helpers.Logger.Error("handler::UpdateCategory - Failed to update category : ", err)
+		ctx.JSON(http.StatusInternalServerError, helpers.Error(err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, helpers.Success(nil, ""))
+}

@@ -85,3 +85,28 @@ func (s *CategoryService) GetListCategory(ctx context.Context, limit, offset int
 
 	return response, nil
 }
+
+func (s *CategoryService) UpdateCategory(ctx context.Context, req *dto.UpdateCategoryRequest) error {
+	categoryData, err := s.CategoryRepo.FindCategoryByID(ctx, req.ID)
+	if err != nil {
+		s.Logger.Error("category::UpdateCategory - failed to find category by id: ", err)
+		return err
+	}
+
+	if len(categoryData.Name) == 0 {
+		s.Logger.Error("category::UpdateCategory - category not found")
+		return errors.New(constants.ErrCategoryNotFound)
+	}
+
+	err = s.CategoryRepo.UpdateNewCategory(ctx, &models.Category{
+		ID:          categoryData.ID,
+		Name:        req.Name,
+		Description: req.Description,
+	})
+	if err != nil {
+		s.Logger.Error("category::UpdateCategory - failed to update category: ", err)
+		return err
+	}
+
+	return nil
+}

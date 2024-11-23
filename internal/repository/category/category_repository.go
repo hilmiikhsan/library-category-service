@@ -71,3 +71,13 @@ func (r *CategoryRepository) FindAllCategory(ctx context.Context, limit, offset 
 
 	return res, nil
 }
+
+func (r CategoryRepository) UpdateNewCategory(ctx context.Context, category *models.Category) error {
+	_, err := r.DB.ExecContext(ctx, r.DB.Rebind(queryUpdateNewCategory), category.Name, category.Description, category.ID)
+	if err != nil {
+		r.Logger.Error("category::UpdateNewCategory - failed to update new category: ", err)
+		return err
+	}
+
+	return nil
+}

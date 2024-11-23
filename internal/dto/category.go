@@ -5,6 +5,12 @@ type CreateCategoryRequest struct {
 	Description string `json:"description"`
 }
 
+type UpdateCategoryRequest struct {
+	ID          string `json:"id" validate:"required"`
+	Name        string `json:"name" validate:"required,min=3,max=100"`
+	Description string `json:"description"`
+}
+
 type GetDetailCategoryResponse struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`

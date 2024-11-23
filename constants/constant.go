@@ -9,6 +9,7 @@ const (
 	ErrInvalidAuthorization       = "invalid authorization"
 	ErrCategoryNotFound           = "category not found"
 	ErrParamIdIsRequired          = "param id is required"
+	ErrIdIsNotValidUUID           = "id is not valid uuid"
 )
 
 const (

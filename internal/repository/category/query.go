@@ -37,4 +37,13 @@ const (
 		LIMIT ?
 		OFFSET ?
 	`
+
+	queryUpdateNewCategory = `
+		UPDATE categories
+		SET
+			name = ?,
+			description = ?,
+			updated_at = NOW()
+		WHERE id = ?
+	`
 )
