@@ -10,9 +10,12 @@ const (
 	ErrCategoryNotFound           = "category not found"
 	ErrParamIdIsRequired          = "param id is required"
 	ErrIdIsNotValidUUID           = "id is not valid uuid"
+	ErrAuthRolePermission         = "you do not have permission to access this endpoint"
 )
 
 const (
 	HeaderAuthorization = "Authorization"
 	TokenTypeAccess     = "token"
+	AuthRoleUser        = "User"
+	AuthRoleAdmin       = "Admin"
 )

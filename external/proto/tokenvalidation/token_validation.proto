@@ -25,4 +25,6 @@ message TokenResponse {
 message UserData {
   string user_id = 1;
   string username = 2;
+  string full_name = 3;
+  string role = 4;
 }

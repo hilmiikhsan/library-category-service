@@ -33,6 +33,13 @@ func (d *Dependency) MiddlewareValidateToken(ctx *gin.Context) {
 		return
 	}
 
+	if tokenData.Role != constants.AuthRoleAdmin {
+		helpers.Logger.Error("middleware::MiddlewareValidateToken - invalid role you do not permission to access this endpoint")
+		ctx.JSON(http.StatusUnauthorized, helpers.Error(constants.ErrAuthRolePermission))
+		ctx.Abort()
+		return
+	}
+
 	ctx.Set(constants.TokenTypeAccess, tokenData)
 
 	ctx.Next()
