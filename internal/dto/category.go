@@ -11,6 +11,10 @@ type UpdateCategoryRequest struct {
 	Description string `json:"description"`
 }
 
+type GetDetailCategoryRequest struct {
+	ID string `json:"id" validate:"required"`
+}
+
 type GetDetailCategoryResponse struct {
 	ID          string `json:"id"`
 	Name        string `json:"name"`

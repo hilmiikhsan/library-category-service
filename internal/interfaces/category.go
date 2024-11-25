@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hilmiikhsan/library-category-service/cmd/proto/category"
 	"github.com/hilmiikhsan/library-category-service/internal/dto"
 	"github.com/hilmiikhsan/library-category-service/internal/models"
 )
@@ -31,4 +32,8 @@ type ICategoryHandler interface {
 	GetListCategory(*gin.Context)
 	UpdateCategory(*gin.Context)
 	DeleteCategory(*gin.Context)
+}
+
+type ICategoryAPI interface {
+	GetDetailCategory(ctx context.Context, req *category.CategoryRequest) (*category.CategoryResponse, error)
 }
