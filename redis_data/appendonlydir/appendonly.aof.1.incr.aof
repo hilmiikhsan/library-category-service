@@ -1,0 +1,32 @@
+*2
+$6
+SELECT
+$1
+0
+*5
+$3
+SET
+$45
+category:943d8c07-834f-49a9-b0e6-ebfbc8f98041
+$163
+{"ID":"943d8c07-834f-49a9-b0e6-ebfbc8f98041","Name":"Komputer","Description":"Jual komputer","CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z"}
+$4
+PXAT
+$13
+1732533576339
+*5
+$3
+SET
+$28
+categories:limit:10:offset:0
+$326
+[{"ID":"196d9317-7353-4ac9-8e00-e365c2a92fa3","Name":"Category baru","Description":"josss","CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z"},{"ID":"943d8c07-834f-49a9-b0e6-ebfbc8f98041","Name":"Komputer","Description":"Jual komputer","CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z"}]
+$4
+PXAT
+$13
+1732533841690
+*2
+$3
+DEL
+$45
+category:943d8c07-834f-49a9-b0e6-ebfbc8f98041
