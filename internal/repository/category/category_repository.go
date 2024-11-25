@@ -73,21 +73,10 @@ func (r *CategoryRepository) FindCategoryByName(ctx context.Context, name string
 
 func (r *CategoryRepository) FindCategoryByID(ctx context.Context, id string) (*models.Category, error) {
 	var (
-		res      = new(models.Category)
-		cacheKey = fmt.Sprintf("category:%s", id)
+		res = new(models.Category)
 	)
 
-	cachedData, err := r.Redis.Get(ctx, cacheKey).Result()
-	if err == nil {
-		err = json.Unmarshal([]byte(cachedData), res)
-		if err == nil {
-			r.Logger.Info("category::FindCategoryByID - Data retrieved from cache")
-			return res, nil
-		}
-		r.Logger.Warn("category::FindCategoryByID - Failed to unmarshal cache data: ", err)
-	}
-
-	err = r.DB.GetContext(ctx, res, r.DB.Rebind(queryFindCategoryByID), id)
+	err := r.DB.GetContext(ctx, res, r.DB.Rebind(queryFindCategoryByID), id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			r.Logger.Error("category::FindCategoryByID - category doesnt exist")
@@ -96,16 +85,6 @@ func (r *CategoryRepository) FindCategoryByID(ctx context.Context, id string) (*
 
 		r.Logger.Error("category::FindCategoryByID - failed to find category by id: ", err)
 		return nil, err
-	}
-
-	dataToCache, err := json.Marshal(res)
-	if err != nil {
-		r.Logger.Warn("category::FindCategoryByID - Failed to marshal data for caching: ", err)
-	} else {
-		err = r.Redis.Set(ctx, cacheKey, dataToCache, 5*time.Minute).Err()
-		if err != nil {
-			r.Logger.Warn("category::FindCategoryByID - Failed to cache data: ", err)
-		}
 	}
 
 	return res, nil
